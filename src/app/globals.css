@@ -49,3 +49,7 @@ html[data-theme="dark"] .auth-divider span{background:#35443d}
 html[data-theme="dark"] .searchbox input{color:var(--ink)}
 .cover-dimension-help{line-height:1.5}
 html[data-theme="dark"] .cover-dimension-help{color:#b2bdb5}
+.nav-login-highlight{padding:10px 12px;background:var(--sage);color:var(--ink);font-weight:700}
+.nav-login-highlight:hover{background:#d3ddca;color:var(--ink)}
+html[data-theme="dark"] .nav-login-highlight{background:#34483e;color:#e7eee8}
+html[data-theme="dark"] .nav-login-highlight:hover{background:#40564a;color:#fff}

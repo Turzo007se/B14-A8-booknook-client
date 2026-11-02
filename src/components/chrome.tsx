@@ -95,7 +95,7 @@ export function SiteHeader() {
     <div className="nav-actions"><ThemeSelector/>{user ? <div className="profile">
       <button className="avatar-button" onClick={() => setDrop(!drop)}><MemberAvatar user={user}/><span>{user.name.split(" ")[0]}</span><ChevronDown size={15}/></button>
       {drop && <div className="dropdown"><div className="drop-name">{user.name}<small>{user.email}</small></div><Link href="/my-profile" onClick={() => setDrop(false)}>My Profile</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}
-    </div> : <><Link className="nav-login" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the nook <span>â†—</span></Link></>}</div>
+    </div> : <><Link className="nav-login nav-login-highlight" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the nook</Link></>}</div>
   </div></header>;
 }
 
