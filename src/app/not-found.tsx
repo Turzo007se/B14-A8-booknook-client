@@ -1,0 +1,2 @@
+import Link from "next/link";import {BookOpen,ArrowUpRight} from "lucide-react";
+export default function NotFound(){return <section className="not-found"><span className="empty-icon"><BookOpen/></span><span className="eyebrow">404 · LOST BETWEEN THE PAGES</span><h1>This page wandered<br/>off the shelf<span className="serif-dot">.</span></h1><p>We looked between the covers. It's not here.</p><Link href="/" className="button">Back to home <ArrowUpRight size={16}/></Link></section>}
