@@ -1,0 +1,19 @@
+export type User={name:string;email:string;photo?:string};
+export type Book={_id:string;title:string;author:string;category:string;image:string;description:string;copies:number;addedBy:string;addedByName:string;createdAt:string};
+export type Borrow={_id:string;bookId:string;title:string;image:string;email:string;borrowDate:string;returnDate:string};
+const seed:Book[]=[
+{_id:"b1",title:"The Midnight Library",author:"Matt Haig",category:"Fiction",image:"https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=85",description:"Between life and death there is a library, and within that library, the shelves go on forever. Every book offers a chance to try another life you could have lived.",copies:4,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-05-12"},
+{_id:"b2",title:"Braiding Sweetgrass",author:"Robin Wall Kimmerer",category:"Science",image:"https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=900&q=85",description:"Drawing on her life as an Indigenous scientist, a mother, and a woman, Kimmerer shows how other living beings offer us gifts and lessons.",copies:3,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-05-10"},
+{_id:"b3",title:"The Creative Act",author:"Rick Rubin",category:"Others",image:"https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=85",description:"A beautiful course of study on creativity, with wisdom and encouragement for creators everywhere. A reminder to stay open to possibility.",copies:2,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-05-08"},
+{_id:"b4",title:"Piranesi",author:"Susanna Clarke",category:"Fiction",image:"https://images.unsplash.com/photo-1513001900722-370f803f498d?auto=format&fit=crop&w=900&q=85",description:"Piranesi lives in a house that is no ordinary building. Its rooms are infinite, its corridors endless, and its walls are lined with thousands upon thousands of statues.",copies:1,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-05-05"},
+{_id:"b5",title:"A Short History of Nearly Everything",author:"Bill Bryson",category:"Science",image:"https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=900&q=85",description:"Bill Bryson takes us on a head-to-toe tour of the planet, explaining the world in a way that makes even the most intriguing scientific facts a pleasure.",copies:5,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-05-03"},
+{_id:"b6",title:"The Boy, the Mole, the Fox and the Horse",author:"Charlie Mackesy",category:"Kids",image:"https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=900&q=85",description:"A story of kindness and friendship, told through the conversations between four unlikely companions as they explore the world together.",copies:2,addedBy:"librarian@booknook.example",addedByName:"The BookNook team",createdAt:"2025-04-29"}];
+const read=<T,>(key:string,fallback:T):T=>{if(typeof window==="undefined")return fallback;try{const s=localStorage.getItem(key);return s?JSON.parse(s):fallback}catch{return fallback}};
+const write=(key:string,v:unknown)=>{if(typeof window!=="undefined")localStorage.setItem(key,JSON.stringify(v))};
+export function books():Book[]{return read("bn-books",seed)}
+export function saveBooks(v:Book[]){write("bn-books",v)}
+export function borrows():Borrow[]{return read("bn-borrows",[])}
+export function saveBorrows(v:Borrow[]){write("bn-borrows",v)}
+export function getUser():User|null{return read("bn-user",null)}
+export function setUser(u:User){write("bn-user",u);window.dispatchEvent(new Event("booknook-auth"))}
+export function signOut(){localStorage.removeItem("bn-user");window.dispatchEvent(new Event("booknook-auth"))}
