@@ -22,3 +22,6 @@ html[data-theme="dark"] .auth-panel{background:#17231f}
 html[data-theme="dark"] .nav.open{background:#17231f;border-color:var(--line)}
 html[data-theme="dark"] .theme-control select{background:#202f29}
 html[data-theme="dark"] .member-avatar,html[data-theme="dark"] .member-avatar-fallback{background:#394a40;color:#f0f4ef}
+.danger-zone{max-width:1160px;margin:28px auto 0;padding:25px 30px;border:1px solid #b85d4b66;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px}.danger-zone h2{font:500 25px var(--serif);margin:8px 0}.danger-zone p{font-size:11px;line-height:1.7;color:var(--muted);max-width:620px;margin:0}.danger-zone .button{flex-shrink:0}.modal .field{margin-top:18px}.modal .field input{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px;font-size:12px}
+html[data-theme="dark"] .danger-zone{background:#202f29;border-color:#a9524277}
+@media(max-width:680px){.danger-zone{margin:22px 18px 0;padding:20px;align-items:flex-start;flex-direction:column}.danger-zone .button{width:100%}}
