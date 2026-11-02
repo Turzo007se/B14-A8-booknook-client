@@ -41,7 +41,7 @@ export function ProfilePhotoUpload({
   }
 
   return <div className="profile-photo-field">
-    <label>Profile photo (required)</label>
+    <label>Profile photo</label>
     <div className="upload-control">
       <label className="upload-button"><input type="file" accept="image/*" disabled={uploading} onChange={event => upload(event.target.files?.[0])}/>{uploading ? <LoaderCircle className="spin-icon" size={16}/> : <ImageUp size={16}/>}<span>{uploading ? "Uploading photo..." : value ? "Upload a different photo" : "Upload a photo"}</span></label>
       <small>PNG, JPG or WebP (max 32 MB)</small>
