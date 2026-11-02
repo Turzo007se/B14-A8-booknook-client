@@ -68,7 +68,6 @@ export function SiteHeader() {
         const profile = { name: data.user.name, email: data.user.email, photo: data.user.image || undefined };
         setUser(profile);
         cacheUser(profile);
-        if (!profile.photo && path !== "/my-profile") router.replace("/my-profile");
       } else {
         signOut();
         setUser(null);
@@ -78,7 +77,7 @@ export function SiteHeader() {
       setUser(null);
     });
     return () => window.removeEventListener("booknook-auth", onAuthChange);
-  }, [path, router]);
+  }, [router]);
 
   async function logout() {
     try { await authClient.signOut(); }
