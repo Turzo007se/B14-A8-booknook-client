@@ -24,7 +24,7 @@ export function BookImageUpload({defaultValue="",showUrlInput=true}:{defaultValu
   }
   return <div className="image-field">
     <div className="upload-control"><label className="upload-button"><input type="file" accept="image/*" disabled={uploading} onChange={e=>upload(e.target.files?.[0])}/>{uploading?<LoaderCircle className="spin-icon" size={16}/>:<ImageUp size={16}/>}<span>{uploading?"Uploading cover...":url?"Upload a different cover":"Upload a cover image"}</span></label><small>PNG, JPG or WebP (max 32 MB)</small></div>
-    <small className="cover-dimension-help">Recommended cover: portrait, about 1:1.6 width-to-height (for example, 1600 x 2560 px).</small>
+    <small className="cover-dimension-help">Optional suggestion: portrait covers around 1:1.6 (for example, 1600 x 2560 px) often fit nicely. Any image dimensions are welcome.</small>
     {showUrlInput||editUrl?<input name="image" type="url" required value={url} onChange={e=>setUrl(e.target.value)} placeholder="Paste a direct image URL"/>:<input type="hidden" name="image" value={url}/>}
     {!showUrlInput&&<button className="button button-outline" type="button" onClick={()=>setEditUrl(value=>!value)}>{editUrl?"Hide image URL field":"Enter image URL instead"}</button>}
     {url&&<img className="upload-preview" src={url} alt="Current book cover preview"/>}
