@@ -1,10 +1,46 @@
 ﻿"use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BookOpen, Menu, X, ChevronDown, LogOut } from "lucide-react";
+import { BookOpen, Menu, X, ChevronDown, LogOut, Sun, Moon, Monitor } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { getUser, setUser as cacheUser, signOut, type User } from "@/lib/store";
 import { authClient } from "@/lib/auth-client";
+
+type ThemeMode = "system" | "light" | "dark";
+
+function ThemeSelector() {
+  const [mode, setMode] = useState<ThemeMode>("system");
+
+  useEffect(() => {
+    const apply = (selected: ThemeMode) => {
+      const theme = selected === "system"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : selected;
+      document.documentElement.dataset.theme = theme;
+    };
+    const saved = localStorage.getItem("booknook-theme");
+    const initial: ThemeMode = saved === "light" || saved === "dark" ? saved : "system";
+    setMode(initial);
+    apply(initial);
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSystemThemeChange = () => {
+      if ((localStorage.getItem("booknook-theme") || "system") === "system") apply("system");
+    };
+    media.addEventListener("change", onSystemThemeChange);
+    return () => media.removeEventListener("change", onSystemThemeChange);
+  }, []);
+
+  function changeMode(value: string) {
+    const next = value as ThemeMode;
+    localStorage.setItem("booknook-theme", next);
+    setMode(next);
+    const isDark = next === "dark" || (next === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  }
+
+  const Icon = mode === "dark" ? Moon : mode === "light" ? Sun : Monitor;
+  return <label className="theme-control" title="Choose appearance"><Icon size={16}/><select aria-label="Color theme" value={mode} onChange={event => changeMode(event.target.value)}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>;
+}
 
 function MemberAvatar({ user }: { user: User }) {
   const [failed, setFailed] = useState(false);
@@ -56,7 +92,7 @@ export function SiteHeader() {
       <Link href="/books" className={path.startsWith("/books") ? "active" : ""}>All Books</Link>
       {user && <><Link href="/add-book">Add a Book</Link><Link href="/my-books">My Books</Link><Link href="/my-borrows">My Borrows</Link></>}
     </nav>
-    <div className="nav-actions">{user ? <div className="profile">
+    <div className="nav-actions"><ThemeSelector/>{user ? <div className="profile">
       <button className="avatar-button" onClick={() => setDrop(!drop)}><MemberAvatar user={user}/><span>{user.name.split(" ")[0]}</span><ChevronDown size={15}/></button>
       {drop && <div className="dropdown"><div className="drop-name">{user.name}<small>{user.email}</small></div><Link href="/my-profile" onClick={() => setDrop(false)}>My Profile</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}
     </div> : <><Link className="nav-login" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the nook <span>â†—</span></Link></>}</div>
