@@ -28,9 +28,12 @@ This repository contains the BookNook Next.js App Router client. The interface i
 
 The assignment's server repository is [B14-A8-booknook-server](https://github.com/Turzo007se/B14-A8-booknook-server). Configure its URL as `NEXT_PUBLIC_API_URL` to connect the Express API. Set `NEXT_PUBLIC_IMGBB_API_KEY` to enable direct cover uploads. Authentication requires a Better Auth secret and MongoDB connection; Google OAuth requires Google client credentials.
 
-Live website: https://booknook-client-two.vercel.app.\n\nWhen running without a configured API, the interface uses demo accounts, books, and borrows stored in browser local storage; the deployed site should be configured with the production API and Better Auth environment variables.
+Live website: https://booknook-client-5ses.onrender.com.
+
+When running without a configured API, the interface uses demo accounts, books, and borrows stored in browser local storage; the deployed site should be configured with the production API and Better Auth environment variables.
 
 ## Environment variables
 
 See `.env.example` for the client and Better Auth configuration keys.
+
 
