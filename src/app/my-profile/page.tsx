@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Trash2, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
-import { borrows, books, getUser, saveBooks, saveBorrows, signOut, type User } from "@/lib/store";
+import { borrows, books, getUser, saveBooks, saveBorrows, setUser as cacheUser, signOut, type User } from "@/lib/store";
 import { authClient } from "@/lib/auth-client";
 import { ProfilePhotoUpload } from "@/components/profile-photo-upload";
 
@@ -21,6 +21,9 @@ export default function Profile() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [changingEmail, setChangingEmail] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,6 +32,13 @@ export default function Profile() {
       sessionStorage.setItem("bn-next", location.pathname);
       router.replace("/login");
     } else { setProfile(current); setPhoto(current.photo || ""); }
+    authClient.getSession().then(({ data }) => {
+      if (!data?.user) return;
+      const fresh = { name: data.user.name, email: data.user.email, photo: data.user.image || undefined };
+      setProfile(fresh);
+      setPhoto(fresh.photo || "");
+      cacheUser(fresh);
+    }).catch(() => {});
     authClient.listAccounts().then(({ data, error }) => {
       if (error) throw new Error(error.message);
       setHasPassword(Boolean(data?.some(account => account.providerId === "credential")));
@@ -89,6 +99,32 @@ export default function Profile() {
     }
   }
 
+  async function updateEmail(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!user) return;
+    const nextEmail = newEmail.trim().toLowerCase();
+    if (nextEmail === user.email.toLowerCase()) {
+      toast.error("Enter an email address different from your current one.");
+      return;
+    }
+    if (nextEmail !== confirmEmail.trim().toLowerCase()) {
+      toast.error("The email addresses do not match.");
+      return;
+    }
+    setChangingEmail(true);
+    try {
+      const result = await authClient.changeEmail({ newEmail: nextEmail, callbackURL: "/my-profile" });
+      if (result.error) throw new Error(result.error.message);
+      setNewEmail("");
+      setConfirmEmail("");
+      toast.success("Check your email for the verification steps. Your sign-in email changes after verification.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Couldn't request an email change.");
+    } finally {
+      setChangingEmail(false);
+    }
+  }
+
   async function deleteAccount() {
     if (!user || confirmText !== "DELETE") return;
     setDeleting(true);
@@ -98,7 +134,7 @@ export default function Profile() {
       saveBooks(books().filter(book => book.addedBy !== user.email));
       saveBorrows(borrows().filter(borrow => borrow.email !== user.email));
       signOut();
-      toast.success("Your account and personal BookNook data have been deleted.");
+      toast.success("Your account and personal BookNook data have been deleted. Shared books remain anonymous for current borrowers.");
       router.replace("/");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Couldn't delete your account.");
@@ -118,6 +154,17 @@ export default function Profile() {
       <div className="form-footer"><span>Books are better when shared.</span><button className="button" disabled={uploadingPhoto}>Save profile <ArrowUpRight size={16}/></button></div>
     </form>
 
+    <section className="book-form email-settings">
+      <span className="eyebrow">SIGN-IN DETAILS</span><h2>Change email address</h2>
+      <p>Your current address is <strong>{user?.email}</strong>. Verify the new address before it becomes your sign-in email.</p>
+      <form className="email-form" onSubmit={updateEmail}>
+        <label>New email address<input type="email" autoComplete="email" required value={newEmail} onChange={event=>setNewEmail(event.target.value)} placeholder="you@example.com"/></label>
+        <label>Retype new email address<input type="email" autoComplete="off" required value={confirmEmail} onChange={event=>setConfirmEmail(event.target.value)} placeholder="you@example.com"/></label>
+        <small>We will email verification instructions. If your current email is verified, you must approve the change there before verifying the new address.</small>
+        <button className="button" disabled={changingEmail}>{changingEmail?"Sending verification...":"Send verification email"}<ArrowUpRight size={16}/></button>
+      </form>
+    </section>
+
     <section className="book-form password-settings">
       <span className="eyebrow">SECURITY</span><h2>Password</h2>
       <p>{hasPassword ? "Change the password you use to sign in with your email." : "Set a password so you can also sign in with your email."}</p>
@@ -131,14 +178,14 @@ export default function Profile() {
     </section>
 
     <section className="danger-zone" aria-labelledby="delete-account-heading">
-      <div><span className="eyebrow">ACCOUNT</span><h2 id="delete-account-heading">Delete account</h2><p>Permanently erase your profile, sign-in credentials, books you shared, and borrowing history. You will be signed out and cannot restore this account.</p></div>
+      <div><span className="eyebrow">ACCOUNT</span><h2 id="delete-account-heading">Delete account</h2><p>Permanently erase your profile, sign-in credentials, and borrowing history. Books you shared stay available to readers under the anonymous name Former member.</p></div>
       <button className="button danger-button" onClick={() => setConfirmDelete(true)}><Trash2 size={16}/> Delete my account</button>
     </section>
 
     {confirmDelete&&<div className="modal-backdrop"><div className="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-delete-title">
       <button className="modal-close" aria-label="Close" onClick={()=>{setConfirmDelete(false);setConfirmText("")}}><X/></button>
       <span className="eyebrow">THIS CANNOT BE UNDONE</span><h2 id="confirm-delete-title">Delete your account?</h2>
-      <p>This permanently deletes your profile and login, the books you shared, and your borrowing history. For everyone’s lending records to stay accurate, you must return books you borrowed and wait for other readers to return books you shared first.</p>
+      <p>This permanently deletes your profile, login, and borrowing history. Books you shared remain in the collection under Former member so current borrowers can return them. Return any books you borrowed before deleting your account.</p>
       <div className="field"><label htmlFor="delete-confirmation">Type DELETE to confirm</label><input id="delete-confirmation" value={confirmText} onChange={event=>setConfirmText(event.target.value)} autoComplete="off"/></div>
       <div className="confirm-actions"><button className="button button-outline" onClick={()=>{setConfirmDelete(false);setConfirmText("")}}>Cancel</button><button className="button danger-button" onClick={deleteAccount} disabled={confirmText!=="DELETE"||deleting}>{deleting?"Deleting…":"Permanently delete"}</button></div>
     </div></div>}
