@@ -25,3 +25,25 @@ html[data-theme="dark"] .member-avatar,html[data-theme="dark"] .member-avatar-fa
 .danger-zone{max-width:1160px;margin:28px auto 0;padding:25px 30px;border:1px solid #b85d4b66;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px}.danger-zone h2{font:500 25px var(--serif);margin:8px 0}.danger-zone p{font-size:11px;line-height:1.7;color:var(--muted);max-width:620px;margin:0}.danger-zone .button{flex-shrink:0}.modal .field{margin-top:18px}.modal .field input{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px;font-size:12px}
 html[data-theme="dark"] .danger-zone{background:#202f29;border-color:#a9524277}
 @media(max-width:680px){.danger-zone{margin:22px 18px 0;padding:20px;align-items:flex-start;flex-direction:column}.danger-zone .button{width:100%}}
+html[data-theme="dark"] .button{background:#718363;border-color:#718363;color:#fff}
+html[data-theme="dark"] .button:hover{background:#839576;border-color:#839576}
+html[data-theme="dark"] .button-light{background:#f6f3e9;border-color:#f6f3e9;color:#243b33}
+html[data-theme="dark"] .button-light:hover{background:#fff;color:#243b33}
+html[data-theme="dark"] .brand-icon,html[data-theme="dark"] .footer-brand .brand-icon{background:#dfe6d8;color:#243b33}
+html[data-theme="dark"] .manifesto,html[data-theme="dark"] .quote-band,html[data-theme="dark"] .page-hero{background:#202f29}
+html[data-theme="dark"] .manifesto-copy>p,html[data-theme="dark"] .how-heading>p,html[data-theme="dark"] .step p,html[data-theme="dark"] .quote-band span,html[data-theme="dark"] .page-hero p,html[data-theme="dark"] .result-count,html[data-theme="dark"] .back-link,html[data-theme="dark"] .detail-author,html[data-theme="dark"] .added-by,html[data-theme="dark"] .added-by small,html[data-theme="dark"] .stock-note,html[data-theme="dark"] .modal>p,html[data-theme="dark"] .form-heading p,html[data-theme="dark"] .dashboard-title p,html[data-theme="dark"] .field small,html[data-theme="dark"] .form-footer>span,html[data-theme="dark"] .manage-info>small,html[data-theme="dark"] .borrow-book small,html[data-theme="dark"] .borrow-due span,html[data-theme="dark"] .empty p,html[data-theme="dark"] .not-found p,html[data-theme="dark"] .auth-intro,html[data-theme="dark"] .auth-divider,html[data-theme="dark"] .auth-switch,html[data-theme="dark"] .password-hint,html[data-theme="dark"] .optional,html[data-theme="dark"] .upload-control>small{color:#b2bdb5}
+html[data-theme="dark"] .step-num{color:#9aa79e}
+html[data-theme="dark"] .step-icon,html[data-theme="dark"] .form-heading-icon,html[data-theme="dark"] .added-avatar,html[data-theme="dark"] .empty-icon{background:#34483e;color:#d4dfd2}
+html[data-theme="dark"] .searchbox,html[data-theme="dark"] .select-wrap,html[data-theme="dark"] .borrow-member{background:#202f29;color:#b2bdb5;border-color:var(--line)}
+html[data-theme="dark"] .category-pill{background:#dfe6d8;color:#243b33}
+html[data-theme="dark"] .cover-stamp{background:#f6f3e9;color:#243b33}
+html[data-theme="dark"] .cover-stamp svg{color:#536b4b}
+html[data-theme="dark"] .description,html[data-theme="dark"] .due-note{color:#c1ccc4}
+html[data-theme="dark"] .modal-close{color:#c1ccc4}
+html[data-theme="dark"] .field label,html[data-theme="dark"] .edit-fields label,html[data-theme="dark"] .auth-form-wrap label{color:#c1ccc4}
+html[data-theme="dark"] .manage-actions button,html[data-theme="dark"] .manage-actions a{color:#c1ccc4}
+html[data-theme="dark"] .manage-actions .delete-action{color:#e59b8c}
+html[data-theme="dark"] .google-button{color:#e7eee8}
+html[data-theme="dark"] .input-icon{color:#aab6ad}
+html[data-theme="dark"] .auth-divider span{background:#35443d}
+html[data-theme="dark"] .searchbox input{color:var(--ink)}
