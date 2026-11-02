@@ -15,6 +15,12 @@ export default function Profile() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [hasPassword, setHasPassword] = useState<boolean | null>(null);
+  const [passwordCheckError, setPasswordCheckError] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [savingPassword, setSavingPassword] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,6 +29,10 @@ export default function Profile() {
       sessionStorage.setItem("bn-next", location.pathname);
       router.replace("/login");
     } else { setProfile(current); setPhoto(current.photo || ""); }
+    authClient.listAccounts().then(({ data, error }) => {
+      if (error) throw new Error(error.message);
+      setHasPassword(Boolean(data?.some(account => account.providerId === "credential")));
+    }).catch(error => setPasswordCheckError(error instanceof Error ? error.message : "Couldn't check your sign-in methods."));
   }, [router]);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -40,6 +50,42 @@ export default function Profile() {
       toast.success("Your profile has been updated.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Couldn't update your profile.");
+    }
+  }
+
+  async function updatePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (hasPassword === null) return;
+    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword)) {
+      toast.error("Use at least 8 characters, including an uppercase and a lowercase letter.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("The new passwords do not match.");
+      return;
+    }
+    setSavingPassword(true);
+    try {
+      if (hasPassword) {
+        const result = await authClient.changePassword({ currentPassword, newPassword, revokeOtherSessions: true });
+        if (result.error) throw new Error(result.error.message);
+      } else {
+        const response = await fetch("/api/account/set-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newPassword }),
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(result?.message || "Couldn't set your password.");
+      }
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      toast.success(hasPassword ? "Your password has been changed." : "A password has been added to your account.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Couldn't update your password.");
+    } finally {
+      setSavingPassword(false);
     }
   }
 
@@ -71,6 +117,18 @@ export default function Profile() {
       </div>
       <div className="form-footer"><span>Books are better when shared.</span><button className="button" disabled={uploadingPhoto}>Save profile <ArrowUpRight size={16}/></button></div>
     </form>
+
+    <section className="book-form password-settings">
+      <span className="eyebrow">SECURITY</span><h2>Password</h2>
+      <p>{hasPassword ? "Change the password you use to sign in with your email." : "Set a password so you can also sign in with your email."}</p>
+      {hasPassword === null ? <small>{passwordCheckError || "Checking your sign-in methods..."}</small> : <form className="password-form" onSubmit={updatePassword}>
+        {hasPassword&&<label>Current password<input type="password" autoComplete="current-password" required value={currentPassword} onChange={event=>setCurrentPassword(event.target.value)}/></label>}
+        <label>New password<input type="password" autoComplete="new-password" minLength={8} required value={newPassword} onChange={event=>setNewPassword(event.target.value)}/></label>
+        <label>Retype new password<input type="password" autoComplete="new-password" minLength={8} required value={confirmPassword} onChange={event=>setConfirmPassword(event.target.value)}/></label>
+        <small>At least 8 characters, including one uppercase and one lowercase letter.</small>
+        <button className="button" disabled={savingPassword}>{savingPassword ? "Saving password..." : hasPassword ? "Change password" : "Set password"}<ArrowUpRight size={16}/></button>
+      </form>}
+    </section>
 
     <section className="danger-zone" aria-labelledby="delete-account-heading">
       <div><span className="eyebrow">ACCOUNT</span><h2 id="delete-account-heading">Delete account</h2><p>Permanently erase your profile, sign-in credentials, books you shared, and borrowing history. You will be signed out and cannot restore this account.</p></div>
