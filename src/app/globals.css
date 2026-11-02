@@ -47,3 +47,5 @@ html[data-theme="dark"] .google-button{color:#e7eee8}
 html[data-theme="dark"] .input-icon{color:#aab6ad}
 html[data-theme="dark"] .auth-divider span{background:#35443d}
 html[data-theme="dark"] .searchbox input{color:var(--ink)}
+.cover-dimension-help{line-height:1.5}
+html[data-theme="dark"] .cover-dimension-help{color:#b2bdb5}
