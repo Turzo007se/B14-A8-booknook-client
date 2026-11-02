@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BookOpen, Menu, X, ChevronDown, LogOut } from "lucide-react";
@@ -59,7 +59,7 @@ export function SiteHeader() {
     <div className="nav-actions">{user ? <div className="profile">
       <button className="avatar-button" onClick={() => setDrop(!drop)}><MemberAvatar user={user}/><span>{user.name.split(" ")[0]}</span><ChevronDown size={15}/></button>
       {drop && <div className="dropdown"><div className="drop-name">{user.name}<small>{user.email}</small></div><Link href="/my-profile" onClick={() => setDrop(false)}>My Profile</Link><button onClick={logout}><LogOut size={15}/> Log out</button></div>}
-    </div> : <><Link className="nav-login" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the nook <span>↗</span></Link></>}</div>
+    </div> : <><Link className="nav-login" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the nook <span>â†—</span></Link></>}</div>
   </div></header>;
 }
 
@@ -67,6 +67,7 @@ export function SiteFooter() {
   return <footer className="footer"><div className="footer-inner">
     <div><Link className="brand footer-brand" href="/"><span className="brand-icon"><BookOpen size={20}/></span><span>book<span className="brand-accent">nook</span><small>YOUR NEXT CHAPTER</small></span></Link><p>A little corner of the internet for people who always have one more book in them.</p></div>
     <div className="footer-links"><span className="eyebrow">EXPLORE</span><Link href="/books">The collection</Link><Link href="/register">Become a member</Link></div>
-    <div className="footer-links"><span className="eyebrow">SAY HELLO</span><a href="mailto:hello@booknook.example">hello@booknook.example</a><div className="socials"><a href="https://instagram.com">ig</a><a href="https://x.com">X</a><a href="https://facebook.com">f</a></div></div>
-  </div><div className="copyright"><span>© 2025 BookNook Library</span><span>Made for the love of getting lost in a story.</span></div></footer>;
+    <div className="footer-links"><span className="eyebrow">SAY HELLO</span><a href="mailto:hello@booknook.com">hello@booknook.com</a><div className="socials"><a href="https://instagram.com">ig</a><a href="https://x.com">X</a><a href="https://facebook.com">f</a></div></div>
+  </div><div className="copyright"><span>Â© 2025 BookNook Library</span><span>Made for the love of getting lost in a story.</span></div></footer>;
 }
+
