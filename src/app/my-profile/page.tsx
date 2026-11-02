@@ -16,6 +16,7 @@ export default function Profile() {
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [hasPassword, setHasPassword] = useState<boolean | null>(null);
+  const [createdWithGoogle, setCreatedWithGoogle] = useState<boolean | null>(null);
   const [passwordCheckError, setPasswordCheckError] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -41,7 +42,9 @@ export default function Profile() {
     }).catch(() => {});
     authClient.listAccounts().then(({ data, error }) => {
       if (error) throw new Error(error.message);
-      setHasPassword(Boolean(data?.some(account => account.providerId === "credential")));
+      const accounts = [...(data || [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      setHasPassword(Boolean(accounts.some(account => account.providerId === "credential")));
+      setCreatedWithGoogle(accounts[0]?.providerId === "google");
     }).catch(error => setPasswordCheckError(error instanceof Error ? error.message : "Couldn't check your sign-in methods."));
   }, [router]);
 
@@ -154,7 +157,7 @@ export default function Profile() {
       <div className="form-footer"><span>Books are better when shared.</span><button className="button" disabled={uploadingPhoto}>Save profile <ArrowUpRight size={16}/></button></div>
     </form>
 
-    <section className="book-form email-settings">
+    {hasPassword !== null && createdWithGoogle === false&&<section className="book-form email-settings">
       <span className="eyebrow">SIGN-IN DETAILS</span><h2>Change email address</h2>
       <p>Your current address is <strong>{user?.email}</strong>. Verify the new address before it becomes your sign-in email.</p>
       <form className="email-form" onSubmit={updateEmail}>
@@ -163,7 +166,7 @@ export default function Profile() {
         <small>We will email verification instructions. If your current email is verified, you must approve the change there before verifying the new address.</small>
         <button className="button" disabled={changingEmail}>{changingEmail?"Sending verification...":"Send verification email"}<ArrowUpRight size={16}/></button>
       </form>
-    </section>
+    </section>}
 
     <section className="book-form password-settings">
       <span className="eyebrow">SECURITY</span><h2>Password</h2>
