@@ -6,9 +6,12 @@ import { ArrowUpRight, Trash2, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
 import { borrows, books, getUser, saveBooks, saveBorrows, signOut, type User } from "@/lib/store";
 import { authClient } from "@/lib/auth-client";
+import { ProfilePhotoUpload } from "@/components/profile-photo-upload";
 
 export default function Profile() {
   const [user, setProfile] = useState<User | null>(null);
+  const [photo, setPhoto] = useState("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -19,7 +22,7 @@ export default function Profile() {
     if (!current) {
       sessionStorage.setItem("bn-next", location.pathname);
       router.replace("/login");
-    } else setProfile(current);
+    } else { setProfile(current); setPhoto(current.photo || ""); }
   }, [router]);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -27,12 +30,13 @@ export default function Profile() {
     if (!user) return;
     const form = new FormData(e.currentTarget);
     const name = String(form.get("name")).trim();
-    const image = String(form.get("image")).trim();
+    const image = String(form.get("image") || "").trim();
     try {
       const result = await authClient.updateUser({ name, image: image || null });
       if (result.error) throw new Error(result.error.message);
       const next = { ...user, name, photo: image || undefined };
       setProfile(next);
+      setPhoto(image);
       toast.success("Your profile has been updated.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Couldn't update your profile.");
@@ -63,9 +67,9 @@ export default function Profile() {
       <div className="form-grid">
         <div className="field full"><label>Name</label><input name="name" required minLength={1} defaultValue={user?.name||""}/></div>
         <div className="field full"><label>Email address</label><input value={user?.email||""} readOnly/><small>Your email address is managed by your account.</small></div>
-        <div className="field full"><label>Photo URL</label><input name="image" type="url" defaultValue={user?.photo||""} placeholder="https://..."/></div>
+        <div className="field full"><ProfilePhotoUpload value={photo} onChange={setPhoto} onUploadingChange={setUploadingPhoto}/></div>
       </div>
-      <div className="form-footer"><span>Books are better when shared.</span><button className="button">Save profile <ArrowUpRight size={16}/></button></div>
+      <div className="form-footer"><span>Books are better when shared.</span><button className="button" disabled={uploadingPhoto}>Save profile <ArrowUpRight size={16}/></button></div>
     </form>
 
     <section className="danger-zone" aria-labelledby="delete-account-heading">
