@@ -41,13 +41,14 @@ export function ProfilePhotoUpload({
   }
 
   return <div className="profile-photo-field">
-    <label>Profile photo <span className="optional">(optional)</span></label>
+    <label>Profile photo (required)</label>
     <div className="upload-control">
       <label className="upload-button"><input type="file" accept="image/*" disabled={uploading} onChange={event => upload(event.target.files?.[0])}/>{uploading ? <LoaderCircle className="spin-icon" size={16}/> : <ImageUp size={16}/>}<span>{uploading ? "Uploading photo..." : value ? "Upload a different photo" : "Upload a photo"}</span></label>
       <small>PNG, JPG or WebP (max 32 MB)</small>
     </div>
+    <small className="profile-photo-dimension-help">Suggested: square 1:1, for example 512 x 512 px. Other sizes are accepted and cropped to fit.</small>
     <label className="profile-photo-url-label" htmlFor="profile-photo-url">Or paste an image URL</label>
-    <input id="profile-photo-url" name="image" type="url" value={value} onChange={event => onChange(event.target.value)} placeholder="https://..."/>
+    <input id="profile-photo-url" name="image" type="url" required value={value} onChange={event => onChange(event.target.value)} placeholder="https://..."/>
     {value && <div className="profile-photo-preview-wrap"><img className="profile-photo-preview" src={value} alt="Profile photo preview"/><button type="button" className="profile-photo-remove" onClick={() => onChange("")}>Remove photo</button></div>}
   </div>;
 }
