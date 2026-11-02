@@ -168,7 +168,7 @@ export default function Profile() {
       </form>
     </section>}
 
-    <section className="book-form password-settings">
+    {createdWithGoogle === false && <section className="book-form password-settings">
       <span className="eyebrow">SECURITY</span><h2>Password</h2>
       <p>{hasPassword ? "Change the password you use to sign in with your email." : "Set a password so you can also sign in with your email."}</p>
       {hasPassword === null ? <small>{passwordCheckError || "Checking your sign-in methods..."}</small> : <form className="password-form" onSubmit={updatePassword}>
@@ -178,7 +178,7 @@ export default function Profile() {
         <small>At least 8 characters, including one uppercase and one lowercase letter.</small>
         <button className="button" disabled={savingPassword}>{savingPassword ? "Saving password..." : hasPassword ? "Change password" : "Set password"}<ArrowUpRight size={16}/></button>
       </form>}
-    </section>
+    </section>}
 
     <section className="danger-zone" aria-labelledby="delete-account-heading">
       <div><span className="eyebrow">ACCOUNT</span><h2 id="delete-account-heading">Delete account</h2><p>Permanently erase your profile, sign-in credentials, and borrowing history. Books you shared stay available to readers under the anonymous name Former member.</p></div>
